@@ -19,9 +19,14 @@
             v-model="select"
             :items="items"
             :rules="selectRules"
-            label="Select"
+            label="Role"
             required
           ></v-select>
+          <v-date-picker
+            v-model="date"
+            label="Date picker"
+            required
+          ></v-date-picker>
           <v-btn
             :disabled="!valid"
             color="success"
@@ -73,9 +78,11 @@
         value => {
           if (value) return true
 
-          return 'Select is required.'
+          return 'Selecting role is required.'
         }
       ],
+      date: '',
+      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
     }),
   }
 </script>
