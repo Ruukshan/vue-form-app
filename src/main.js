@@ -9,6 +9,9 @@ import * as directives from 'vuetify/directives'
 // Components
 import App from './App.vue'
 
+// Fonts
+import 'unfonts.css'
+
 const vuetify = createVuetify({
   components,
   directives,

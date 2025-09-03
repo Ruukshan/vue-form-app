@@ -9,12 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/roboto": "^5.2.6",
     "firebase": "^12.2.1",
     "vue": "^3.5.18",
     "vuetify": "^3.9.7"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",
+    "unplugin-fonts": "^1.4.0",
     "vite": "^7.1.2"
   }
 }
