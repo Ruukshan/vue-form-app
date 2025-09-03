@@ -11,6 +11,7 @@
   "dependencies": {
     "@fontsource/roboto": "^5.2.6",
     "firebase": "^12.2.1",
+    "vee-validate": "^4.15.1",
     "vue": "^3.5.18",
     "vuetify": "^3.9.7"
   },
