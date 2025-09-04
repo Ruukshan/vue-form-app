@@ -52,6 +52,24 @@
           Submit
         </v-btn>
       </v-row>
+      <!-- Add Snackbar -->
+      <v-snackbar
+        v-model="snackbar"
+        :color="color"
+        :timeout="timeout"
+      >
+        {{ text }}
+
+        <template v-slot:actions>
+          <v-btn
+            color="white"
+            variant="text"
+            @click="snackbar = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-container>
   </v-form>
 </template>
@@ -111,6 +129,10 @@ import {collection, addDoc} from 'firebase/firestore';
         },
       ],
       loading: false,
+      snackbar: false,
+      text: '',
+      color: 'success',
+      timeout: 2000,
     }),
     methods: {
       async submit () {
@@ -130,7 +152,11 @@ import {collection, addDoc} from 'firebase/firestore';
             const docRef = await addDoc(collection(db, 'interns'), formData);
 
             console.log('Document written with ID:', docRef.id);
-            alert('Registration successful. Thank you for joining us!');
+
+            // Show success message
+            this.text = 'Registration successful!';
+            this.color = 'success';
+            this.snackbar = true;
 
             // Reset form after success
             this.name = '';
@@ -139,7 +165,11 @@ import {collection, addDoc} from 'firebase/firestore';
             this.date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
           } catch (error) {
             console.error('Error submitting form:', error);
-            alert('Registration failed. Please try again.');
+            
+            // Show error message
+            this.text = 'Registration failed. Please try again.';
+            this.color = 'error';
+            this.snackbar = true;
           } finally {
             this.loading = false;
           }
