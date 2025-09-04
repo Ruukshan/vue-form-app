@@ -6,7 +6,7 @@
         <v-col cols="12" md="8">
           <v-text-field
             v-model="name"
-            :counter="10"
+            :counter="25"
             :rules="nameRules"
             label="Name"
             required
@@ -56,6 +56,9 @@
   </v-form>
 </template>
 <script>
+import { db } from '../services/firebase';
+import {collection, addDoc} from 'firebase/firestore';
+
   export default {
     data: () => ({
       valid: false,
@@ -67,9 +70,9 @@
           return 'Name is required.'
         },
         value => {
-          if (value?.length <= 10) return true
+          if (value?.length <= 25) return true
 
-          return 'Name must be less than 10 characters.'
+          return 'Name must be less than 25 characters.'
         },
       ],
       email: '',
@@ -114,9 +117,26 @@
         if (this.valid) {
           this.loading = true;
           try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            console.log('Form submitted: ', {name: this.name, email: this.email, role: this.select, date: this.date});
-            alert('Registration successful!');
+
+            // Prepare data object
+            const formData = {
+              name: this.name,
+              email: this.email,
+              role: this.select,
+              date: this.date,
+            };
+
+            // Save file to Firestore(collection ' interns')
+            const docRef = await addDoc(collection(db, 'interns'), formData);
+
+            console.log('Document written with ID:', docRef.id);
+            alert('Registration successful. Thank you for joining us!');
+
+            // Reset form after success
+            this.name = '';
+            this.email = '';
+            this.select = null;
+            this.date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
           } catch (error) {
             console.error('Error submitting form:', error);
             alert('Registration failed. Please try again.');
