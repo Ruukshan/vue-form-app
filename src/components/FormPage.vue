@@ -206,7 +206,7 @@ import {collection, addDoc} from 'firebase/firestore';
             this.name = '';
             this.email = '';
             this.select = null;
-            this.date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10);
+            this.date = null;
           } catch (error) {
             console.error('Error submitting form:', error);
             
