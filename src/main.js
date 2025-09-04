@@ -12,9 +12,21 @@ import App from './App.vue'
 // Fonts
 import 'unfonts.css'
 
+//icons
+import { aliases, mdi } from 'vuetify/iconsets/mdi';
+import '@mdi/font/css/materialdesignicons.css'
+
 const vuetify = createVuetify({
   components,
   directives,
-})
+  icons: {
+    defaultSet: 'mdi',
+    sets: {
+      mdi,
+    },
+    aliases,
+ 
+  },
+});
 
 createApp(App).use(vuetify).mount('#app')

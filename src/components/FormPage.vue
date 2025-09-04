@@ -1,77 +1,119 @@
 <template>
-<h1>Registration Form</h1>
-  <v-form v-model="valid" @submit.prevent="submit">
-    <v-container>
-      <v-row justify="center">
-        <v-col cols="12" md="8">
-          <v-text-field
-            v-model="name"
-            :counter="25"
-            :rules="nameRules"
-            label="Name"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="8">
-          <v-text-field
-            v-model="email"
-            :rules="emailRules"
-            label="E-mail"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="8">
-          <v-select
-            v-model="select"
-            :items="items"
-            :rules="selectRules"
-            label="Role"
-            required
-          ></v-select>
-        </v-col>
-        <v-col cols="12" md="8">
-          <v-date-picker
-            color= "primary"
-            v-model="date"
-            :rules="dateRules"
-            label="Date picker"
-            required
-          ></v-date-picker>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-btn
-          :disabled="loading"
-          :loading="loading"
-          color="success"
-          class="mr-4"
-          size= "x-large"
-          variant="flat"
-          @click="submit"
-        >
-          Submit
-        </v-btn>
-      </v-row>
-      <!-- Add Snackbar -->
-      <v-snackbar
-        v-model="snackbar"
-        :color="color"
-        :timeout="timeout"
-      >
-        {{ text }}
+  <v-container>
+    <v-row justify="center">
+      <v-col cols="16" sm="12" md="10">
+        <v-card class="mx-auto" max-width="500">
+          <v-card-title class="text-h4 custom-title text-center font-weight-bold">
+            Registration Form
+          </v-card-title>
+          <v-card-text>
+            <v-form v-model="valid" @submit.prevent="submit">
+              <v-container>
+                <v-row >
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="name"
+                      :counter="25"
+                      :rules="nameRules"
+                      label="Name"
+                      variant="outlined"
+                      hint="Enter your name"
+                      prepend-inner-icon="mdi-account"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="email"
+                      :rules="emailRules"
+                      label="E-mail"
+                      variant="outlined"
+                      hint="Enter your e-mail"
+                      prepend-inner-icon="mdi-email"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      v-model="select"
+                      :items="items"
+                      :rules="selectRules"
+                      label="Role"
+                      variant="outlined"
+                      hint="Select your role"
+                      prepend-inner-icon="mdi-briefcase"
+                      required
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-menu
+                      v-model="dateMenu"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ props }">
+                        <v-text-field
+                          v-model="date"
+                          :rules:="dateRules"
+                          label="Date Joined"
+                          prepend-inner-icon="mdi-calendar"
+                          readonly
+                          required
+                          clearable
+                          variant="outlined"
+                          hint="Select your date"
+                          v-bind="props"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="date"
+                        color="primary"
+                        @update:modelValue = "dateMenu = false"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+                </v-row>
+                <v-row justify="center">
+                  <v-btn
+                    :disabled="loading"
+                    :loading="loading"
+                    color="primary"
+                    class="mr-4"
+                    size= "x-large"
+                    variant="flat"
+                    @click="submit"
+                  >
+                    Submit
+                  </v-btn>
+                </v-row>
+              </v-container>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  <!-- Add Snackbar -->
+    <v-snackbar
+      v-model="snackbar"
+      :color="color"
+      :timeout="timeout"
+    >
+      {{ text }}
 
-        <template v-slot:actions>
-          <v-btn
-            color="white"
-            variant="text"
-            @click="snackbar = false"
-          >
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
-    </v-container>
-  </v-form>
+      <template v-slot:actions>
+        <v-btn
+          color="white"
+          variant="text"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </v-container>
 </template>
 <script>
 import { db } from '../services/firebase';
@@ -120,7 +162,7 @@ import {collection, addDoc} from 'firebase/firestore';
           return 'Selecting role is required.'
         }
       ],
-      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      date: null,
       dateRules: [
         value => {
           if (value) return true
@@ -128,6 +170,7 @@ import {collection, addDoc} from 'firebase/firestore';
           return 'Selecting date is required.'
         },
       ],
+      dateMenu: false,
       loading: false,
       snackbar: false,
       text: '',
@@ -145,7 +188,8 @@ import {collection, addDoc} from 'firebase/firestore';
               name: this.name,
               email: this.email,
               role: this.select,
-              date: this.date,
+              dateJoined: this.date,
+              createdAt: new Date().toISOString(),
             };
 
             // Save file to Firestore(collection ' interns')
@@ -179,10 +223,25 @@ import {collection, addDoc} from 'firebase/firestore';
   }
 </script>
 <style scoped>
-h1 {
-  text-align: center;
-  margin-top: 50px;
-  font-size: 40px;
-  color: primary;
+.v-card {
+  background-color: #dadee6;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
 }
+
+.custom-title {
+  color: #1976D2;
+}
+
+.v-form {
+  margin-top: 20px;
+}
+
+.v-btn {
+  margin-top: 20px;
+}
+
 </style>
