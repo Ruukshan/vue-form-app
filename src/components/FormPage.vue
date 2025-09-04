@@ -1,6 +1,6 @@
 <template>
 <h1>Registration Form</h1>
-  <v-form v-model="valid">
+  <v-form v-model="valid" @submit.prevent="submit">
     <v-container>
           <v-text-field
             v-model="name"
@@ -24,13 +24,18 @@
           ></v-select>
           <v-date-picker
             v-model="date"
+            :rules="dateRules"
             label="Date picker"
             required
           ></v-date-picker>
           <v-btn
-            :disabled="!valid"
+            :disabled="loading"
+            :loading="loading"
             color="success"
             class="mr-4"
+            size= "x-large"
+            variant="flat"
+            @click="submit"
           >
             Submit
           </v-btn>
@@ -81,9 +86,24 @@
           return 'Selecting role is required.'
         }
       ],
-      date: '',
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      dateRules: [
+        value => {
+          if (value) return true
+
+          return 'Selecting date is required.'
+        },
+      ],
+      loading: false,
     }),
+    methods: {
+      submit () {
+        this.loading = true
+        setTimeout(() => {
+          this.loading = false
+        }, 2000)
+      }
+    },
   }
 </script>
 <style scoped>
