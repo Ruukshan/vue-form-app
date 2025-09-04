@@ -31,6 +31,7 @@
         </v-col>
         <v-col cols="12" md="8">
           <v-date-picker
+            color= "primary"
             v-model="date"
             :rules="dateRules"
             label="Date picker"
@@ -132,6 +133,6 @@ h1 {
   text-align: center;
   margin-top: 50px;
   font-size: 40px;
-  color: brown;
+  color: primary;
 }
 </style>
