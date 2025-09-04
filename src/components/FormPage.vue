@@ -2,6 +2,8 @@
 <h1>Registration Form</h1>
   <v-form v-model="valid" @submit.prevent="submit">
     <v-container>
+      <v-row justify="center">
+        <v-col cols="12" md="8">
           <v-text-field
             v-model="name"
             :counter="10"
@@ -9,12 +11,16 @@
             label="Name"
             required
           ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="8">
           <v-text-field
             v-model="email"
             :rules="emailRules"
             label="E-mail"
             required
           ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="8">
           <v-select
             v-model="select"
             :items="items"
@@ -22,23 +28,29 @@
             label="Role"
             required
           ></v-select>
+        </v-col>
+        <v-col cols="12" md="8">
           <v-date-picker
             v-model="date"
             :rules="dateRules"
             label="Date picker"
             required
           ></v-date-picker>
-          <v-btn
-            :disabled="loading"
-            :loading="loading"
-            color="success"
-            class="mr-4"
-            size= "x-large"
-            variant="flat"
-            @click="submit"
-          >
-            Submit
-          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-btn
+          :disabled="loading"
+          :loading="loading"
+          color="success"
+          class="mr-4"
+          size= "x-large"
+          variant="flat"
+          @click="submit"
+        >
+          Submit
+        </v-btn>
+      </v-row>
     </v-container>
   </v-form>
 </template>
@@ -97,11 +109,20 @@
       loading: false,
     }),
     methods: {
-      submit () {
-        this.loading = true
-        setTimeout(() => {
-          this.loading = false
-        }, 2000)
+      async submit () {
+        if (this.valid) {
+          this.loading = true;
+          try {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            console.log('Form submitted: ', {name: this.name, email: this.email, role: this.select, date: this.date});
+            alert('Registration successful!');
+          } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('Registration failed. Please try again.');
+          } finally {
+            this.loading = false;
+          }
+        }
       }
     },
   }
